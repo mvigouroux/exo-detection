@@ -61,14 +61,18 @@ class Tonneau {
     this.t.style.border = "1px solid black";
     this.t.style.borderRadius = "8px";
     this.initialization();
+
+    
   }
+
+  
 
   initialization = () => {
     this.intervalID = setInterval(() => {
       this.posY += 5;
       this.t.style.top = `${this.posY}px`;
       this.detectionSurface();
-    }, 50);
+    }, 100);
   }
 
   getT() {
@@ -78,18 +82,56 @@ class Tonneau {
   // TODO
   detectionSurface = () => {
 
+    let tPositionX = this.posX;
+    let tPositionY = parseInt(this.t.style.top)+22;
+    let ti = this.intervalID;
+
+    platforms.forEach( p => checkLeftOrRight(p))
+
+    function checkLeftOrRight(p){
+
+      let pLeftTopSide = p.left + p.width;
+      let pRight = widthScreen - (p.right + p.width);
+      let pRightTopSide = pRight + p.width;
+
+
+      if (p.left && tPositionX < 200) {
+
+        if (tPositionX >= p.left && tPositionX <= pLeftTopSide) {
+      
+          if (tPositionY >= p.top) {
+            clearInterval(ti)
+          }
+        }
+      } 
+      
+
+      if (p.right && tPositionX >= 200) {
+
+        if (tPositionX >= pRight) {
+         
+          if (tPositionY >= p.top) {
+            clearInterval(ti)
+          }
+        } 
+      } 
+
+    }
+  
+
     // If surface detected
     //clearInterval(this.intervalID);
   }
 
 }
 
+
 function generateTonneau() {
   setInterval(() => {
     const randomX = Math.floor(Math.random() * widthScreen);
     const newT = new Tonneau(randomX);
     screen.appendChild(newT.getT());
-  }, 2000);
+  }, 500);
 }
 
 // Append the platform
@@ -98,4 +140,5 @@ root.appendChild(screen);
 
 // Generate Tonneaux
 generateTonneau();
+
 
